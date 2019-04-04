@@ -1,5 +1,5 @@
 # m5fire-camera-viewer
-The image is produced by ESP-EYE V2.1 dev board, running esp-who/examples/single-chip/camera_web_server.
+The image is produced by camera on ESP-EYE V2.1 dev board, running espressif/esp-who/examples/single-chip/camera_web_server.
 
 By default, camera_web_server provides two outputs:
 1. MJPEG stream, using url as "http://192.168.4.1" or "http://192.168.4.1/stream". MJPEG stream url doesn't work, don't know why currently
