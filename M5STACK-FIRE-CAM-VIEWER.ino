@@ -1,13 +1,11 @@
 /*  
  ESP-EYE dev board + M5Fire stack
+ For ESP-EYE dev board, average image size is around 10KB
  */
 
 #include <M5Stack.h>
 #include <WiFi.h>
 #include <HTTPClient.h>
-
-// for ESP-EYE dev board, average image size is around 10KB
-#define BUFLEN 16384 // buffer for image. 
 
 const char * ssid     = "ESP32-Camera";
 const char * password = "Hello123$";
@@ -55,26 +53,25 @@ void loop() {
       Serial.printf("image size = %dB\n", len);
       
       // create buffer for read
-      size_t    buf_len = BUFLEN * sizeof(uint8_t);
-      uint8_t * buf = (uint8_t *)malloc(buf_len);
+      uint8_t * buf = (uint8_t *)malloc(len * sizeof(uint8_t));
       uint8_t * ptr = buf;
-      int       image_s = len;
       
       // get tcp stream
       WiFiClient * stream = http.getStreamPtr();
       
       // read all data from server
-      while (http.connected() && (len > 0 || len == -1)) {
+      int left = len;
+      while (http.connected() && (left > 0 || len == -1)) {
         // get available data size
         size_t size = stream->available();
         if (size) {
           // confirm buffer is large enough for available data
-          int s = ((size > buf_len) ? buf_len : size);
+          int s = ((size > len) ? len : size);
           int c = stream->readBytes(ptr, s);
           ptr += c;
           Serial.printf("read bytes = %dB\n", c);
           
-          if (len > 0) { len -= c; }
+          if (left > 0) { left -= c; }
         }
       }
       
@@ -82,7 +79,7 @@ void loop() {
       Serial.println();
       
       // draw image
-      M5.Lcd.drawJpg(buf, image_s);
+      M5.Lcd.drawJpg(buf, len);
       free(buf);
       buf = NULL;
     }
