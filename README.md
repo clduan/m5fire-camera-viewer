@@ -4,10 +4,12 @@ The image is produced by ESP-EYE V2.1 dev board, running esp-who/examples/single
 By default, camera_web_server provides two outputs:
 1. MJPEG stream, using url as "http://192.168.4.1" or "http://192.168.4.1/stream"
 2. static JPEG image, using url as "http://192.168.4.1/capture"
+
 [ISSUE] MJPEG stream url doesn't work, don't know why currently
 
 
 Basically the file size of jpeg image provided by ESP-EYE is around 10KB.
+
 [ISSUE] Allocating buffer in heap instead of stack, as it is always crash in my M5STACK-FIRE kit.
 
 For M5STACK FIRE kit, the LCD resolution is 320 x 240 pixels, and 1 unit of the parameter of M5.Lcd.setTextSize function is 10 pixels. In this implementation, the layout design is as below:
