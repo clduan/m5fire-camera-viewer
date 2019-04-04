@@ -10,10 +10,13 @@
 const char * ssid     = "ESP32-Camera";
 const char * password = "Hello123$";
 const char * url      = "http://192.168.4.1/capture";
+//const char * url      = "http://192.168.4.1/stream";
+
+// take down battery value
+int prev_battery = 0;
 
 // read battery level
-int8_t getBatteryLevel()
-{
+int8_t getBatteryLevel() {
   Wire.beginTransmission(0x75);
   Wire.write(0x78);
   if (Wire.endTransmission(false) == 0
@@ -26,7 +29,20 @@ int8_t getBatteryLevel()
     default: return 0;
     }
   }
+  
   return -1;
+}
+
+// print battery level
+void printBatteryLevel(int level) {
+  M5.Lcd.setRotation(1);
+  M5.Lcd.setCursor(0, 0);
+  M5.Lcd.fillRect(0, 0, 320, 20, BLACK); // 20 pixels = 2 text size
+  M5.Lcd.setTextColor(WHITE);
+  M5.Lcd.setTextSize(2);
+  M5.Lcd.print("Battery : ");
+  M5.Lcd.print(level);
+  M5.Lcd.print("%");
 }
 
 void setup(void) {
@@ -34,6 +50,8 @@ void setup(void) {
   
   // for battery level reading
   Wire.begin();
+  prev_battery = getBatteryLevel();
+  printBatteryLevel(prev_battery);
   
   WiFi.begin(ssid, password);
   delay(1000);
@@ -54,14 +72,13 @@ void loop() {
     delay(1000);
   }
 
-  M5.Lcd.setRotation(1);
-  M5.Lcd.setCursor(0, 0);
-  // print battery level
-  M5.Lcd.setTextColor(WHITE);
-  M5.Lcd.setTextSize(2);
-  M5.Lcd.print("Battery : ");
-  M5.Lcd.print(getBatteryLevel());
-  M5.Lcd.print("%");
+  // print battery level, and only re-print when battery level changes
+  int curr_battery = getBatteryLevel();
+  if (curr_battery != prev_battery) {
+    printBatteryLevel(curr_battery);
+    // update prev_battery
+    prev_battery = curr_battery;
+  }
 
   HTTPClient http;
   Serial.print("[HTTP] begin...\n");
