@@ -7,9 +7,9 @@ By default, camera_web_server provides two outputs:
 
 
 Basically the file size of jpeg image provided by ESP-EYE is around 10KB.
-Allocating buffer in heap instead of stack, as it is always crash in my M5STACK-FIRE kit.
+Allocating buffer in heap instead of stack, as it is always crash in my M5STACK_FIRE kit.
 
-For M5STACK FIRE kit, the LCD resolution is 320 x 240 pixels, and 1 unit of the parameter of M5.Lcd.setTextSize function is 10 pixels. In this implementation, the layout design is as below:
+For M5STACK_FIRE kit, the LCD resolution is 320 x 240 pixels, and 1 unit of the parameter of M5.Lcd.setTextSize function is 10 pixels. In this implementation, the layout design is as below:
 1. for information text: (pos.x = 0, pos.y = 0, width = 320, height = 20)
 2. for jpeg image: (pox.x = 0, pos.y = 0, width = 320, height = 220)
 Be noted that jpeg image drawing is starting from right-bottom corner, so modify the "height" directly will produce the effect wanted.
